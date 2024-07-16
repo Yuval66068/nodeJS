@@ -1,10 +1,10 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
-import mongoose from "mongoose";
 import dotenv from "dotenv";
 import chalk from "chalk";
-import cardsRoutes from "./routes/cards.js";
+import {cardsRouter} from "./routes/cards.js";
+import { connectDB } from "./db/db.js";
 
 const app = express();
 dotenv.config();
@@ -15,11 +15,8 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 
-app.use("/api/cards", cardsRoutes);
+app.use("/api/cards", cardsRouter);
 
-app.listen(port,() => console.log(`server is running on http://localhost:${port}`));
+app.listen(port,() => console.log(chalk.bgBlue.bold(`server is running on http://localhost:${port}`)));
 
-
-mongoose.connect("mongodb+srv://avishai2015T:avishai2015T@nodejs.algyfpq.mongodb.net/")
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.log(err));
+connectDB();

@@ -1,7 +1,10 @@
 import express from "express";
+import { createCard, deleteCardById, editCardById, getAllCards, getCardById } from "../controllers/cards.js";
 
- const router = express.Router();
+ export const cardsRouter = express.Router();
 
-router.get("/", () => console.log("get success"))
-
-export default router;
+ cardsRouter.get("/", getAllCards);
+ cardsRouter.get("/:id", getCardById);
+ cardsRouter.post("/", createCard);
+ cardsRouter.delete("/:id",deleteCardById);
+ cardsRouter.put("/:id",editCardById);
