@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import chalk from "chalk";
 import {cardsRouter} from "./routes/cards.js";
 import { connectDB } from "./db/db.js";
+import { usersRouter } from "./routes/users.js";
 
 const app = express();
 dotenv.config();
@@ -16,6 +17,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 app.use("/api/cards", cardsRouter);
+app.use("/api/users",usersRouter)
 
 app.listen(port,() => console.log(chalk.bgBlue.bold(`server is running on http://localhost:${port}`)));
 

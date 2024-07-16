@@ -20,6 +20,14 @@ export const getCardById = async (req, res) => {
   }
 };
 
+export const getUserCards = async (req, res) => {
+  try {
+  //  
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
 export const createCard = async (req, res) => {
   try {
     const newCard = await Card.create(req.body);
@@ -51,6 +59,15 @@ export const editCardById = async (req, res) => {
     const card = await Card.findByIdAndUpdate(id, req.body, { new: true });
     const cards = await Card.find();
     res.status(200).json({ message: "card updated successfully", card, cards });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export const toggleLike = async (req, res) => {
+ 
+  try {
+  //  
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
