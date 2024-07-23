@@ -7,4 +7,4 @@ export const addressSchema = new Schema({
     street: {type:String, required:true, minLength:2, maxLength: 50},
     houseNumber: {type:Number, required:true, minLength:2, maxLength: 50},
     zip: {type:Number, required:true, minLength:2, maxLength: 50},
-})
+},{ _id: false });

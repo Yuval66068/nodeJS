@@ -8,3 +8,5 @@ import { createCard, deleteCardById, editCardById, getAllCards, getCardById } fr
  cardsRouter.post("/", createCard);
  cardsRouter.delete("/:id",deleteCardById);
  cardsRouter.put("/:id",editCardById);
+ cardsRouter.get("/my-cards",() => {});//get my cards
+ cardsRouter.patch("/:id",() => {});//toggle like
