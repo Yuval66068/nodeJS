@@ -11,4 +11,5 @@ export const userSchema = new Schema({
     password: {type:String},
     image: {type: imageSchema},
     address: {type: addressSchema},
+    isAdmin: {type:Boolean, required:false},
 }, {timestamps:true})
