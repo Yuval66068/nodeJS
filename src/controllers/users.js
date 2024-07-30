@@ -28,17 +28,21 @@ export const loginUser = async (req, res) => {
 
   try {
     const user = await User.findOne({ email });
-    console.log(user)
+    console.log(user);
     if (!user) throw Error("User does not exist");
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) throw Error("Incorrect password");
 
-    const token = jwt.sign({ _id: user._id, isBusiness: user.isBusiness, isAdmin: user.isAdmin }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { _id: user._id, isBusiness: user.isBusiness, isAdmin: user.isAdmin },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "3h",
+      }
+    );
 
-    res.status(200).json({message: "user logged in successfully", token});
+    res.status(200).json({ message: "user logged in successfully", token });
   } catch (error) {
     res.status(404).json({ error: error.message });
   }
@@ -55,6 +59,12 @@ export const getUsers = async (req, res) => {
 
 export const getUserById = async (req, res) => {
   const { id } = req.params;
+  const {_id, isAdmin} = req.user;
+
+  console.log(isAdmin,_id)
+
+  if(!isAdmin && _id !== id)return  res.status(401).json({ message: "Unauthorized access, admin or same user only" });
+
   try {
     const user = await User.findById(id);
     res.status(200).json(user);
@@ -63,21 +73,53 @@ export const getUserById = async (req, res) => {
   }
 };
 
-export const createUser = async (req, res) => {
-  const user = req.body;
+export const editUser = async (req, res) => {
+  const { id } = req.params;
+  const updatedData = req.body;
+  const userId = req.user._id;
+
   try {
-    const newUser = await User.create(user);
-    res.status(201).json(newUser);
+    const existingUser = await User.findById(id);
+
+    if (!existingUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (existingUser._id.toString() !== userId.toString()) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to edit this user" });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(id, updatedData, {
+      new: true,
+    });
+    res.status(200).json(updatedUser);
   } catch (error) {
     res.status(409).json({ error: error.message });
   }
 };
 
-export const updateUser = async (req, res) => {
+export const toggleisBuisness = async (req, res) => {
   const { id } = req.params;
-  const user = req.body;
+  const userId = req.user._id;
+
   try {
-    const updatedUser = await User.findByIdAndUpdate(id, user, { new: true });
+
+    const existingUser = await User.findById(id);
+
+    if (!existingUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (existingUser._id.toString() !== userId.toString()) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to edit this user" });
+    }
+
+
+    const updatedUser = await User.findByIdAndUpdate(id, { isBusiness: !existingUser.isBusiness}, { new: true });
     res.status(200).json(updatedUser);
   } catch (error) {
     res.status(409).json({ error: error.message });
@@ -86,20 +128,14 @@ export const updateUser = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
   const { id } = req.params;
+  const {_id,isAdmin} = req.user;
+
+  if(!isAdmin && _id !== id)return  res.status(401).json({ message: "Unauthorized access, admin or same user only" });
+
   try {
     const deletedUser = await User.findByIdAndDelete(id);
+    if (!deletedUser) throw Error("User does not exist");
     res.status(200).json(deletedUser);
-  } catch (error) {
-    res.status(409).json({ error: error.message });
-  }
-};
-
-export const toggleisBuisness = async (req, res) => {
-  const { id } = req.params;
-  const user = req.body;
-  try {
-    const updatedUser = await User.findByIdAndUpdate(id, user, { new: true });
-    res.status(200).json(updatedUser);
   } catch (error) {
     res.status(409).json({ error: error.message });
   }
