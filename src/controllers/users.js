@@ -61,8 +61,6 @@ export const getUserById = async (req, res) => {
   const { id } = req.params;
   const {_id, isAdmin} = req.user;
 
-  console.log(isAdmin,_id)
-
   if(!isAdmin && _id !== id)return  res.status(401).json({ message: "Unauthorized access, admin or same user only" });
 
   try {
@@ -77,6 +75,8 @@ export const editUser = async (req, res) => {
   const { id } = req.params;
   const updatedData = req.body;
   const userId = req.user._id;
+
+  if(_id !== id)return  res.status(401).json({ message: "Unauthorized access, same user only" });
 
   try {
     const existingUser = await User.findById(id);
@@ -104,8 +104,9 @@ export const toggleisBuisness = async (req, res) => {
   const { id } = req.params;
   const userId = req.user._id;
 
-  try {
+  if(_id !== id)return  res.status(401).json({ message: "Unauthorized access, same user only" });
 
+  try {
     const existingUser = await User.findById(id);
 
     if (!existingUser) {

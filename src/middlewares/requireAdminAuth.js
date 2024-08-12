@@ -1,19 +1,19 @@
 import jwt from "jsonwebtoken";
 
 export const requireAdminAuth = (req, res, next) => {
-    const {authorization} = req.headers;
+  const { authorization } = req.headers;
 
-    if(!authorization) return res.status(400).json({message:"Authorization token required"});
-    
-    const token = authorization.split(" ")[1];
+  if (!authorization)
+    return res.status(400).json({ message: "Authorization token required" });
 
-    try {
-        const { isAdmin} = jwt.verify(token, process.env.JWT_SECRET);
+  const token = authorization.split(" ")[1];
 
-        if(!isAdmin) throw Error("Unauthorized access, admin only!");
-        next();
+  try {
+    const { isAdmin } = jwt.verify(token, process.env.JWT_SECRET);
 
-    } catch (error) {
-        res.status(401).json({error: error.message});
-    }
-}
+    if (!isAdmin) throw Error("Unauthorized access, admin only!");
+    next();
+  } catch (error) {
+    res.status(401).json({ error: error.message });
+  }
+};

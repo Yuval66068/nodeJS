@@ -12,5 +12,5 @@ export const cardSchema = new Schema({
     image: {type: imageSchema, required:true},
     address: {type: addressSchema, required:true},
     likes:[{type:String}],
-    // userId: {type:String, required:true},
+    userId: {type:String, required:true},
 }, {timestamps:true})
